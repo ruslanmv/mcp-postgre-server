@@ -1,4 +1,3 @@
-import pytest
 
 from mcp_postgre_server.config import Settings
 from mcp_postgre_server.security.policies import ServerPolicy

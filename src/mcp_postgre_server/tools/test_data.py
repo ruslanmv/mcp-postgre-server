@@ -38,7 +38,7 @@ def _sample_value(column: dict[str, Any], row_index: int, rng: random.Random) ->
     if "timestamp" in dtype:
         return f"2026-01-{(row_index % 28) + 1:02d}T12:00:00Z"
     if "json" in dtype:
-        return '{"source":"mcp-postgre-server","row":%d}' % row_index
+        return f'{{"source":"mcp-postgre-server","row":{row_index}}}'
     return f"test_{name}_{row_index}"
 
 
@@ -54,7 +54,9 @@ async def generate_test_fixtures_impl(
     metadata = await describe_table_impl(db, policy, schema, table)
     rng = random.Random(seed)
     insertable_columns = [
-        col for col in metadata["columns"] if not (col.get("column_default") and "nextval" in str(col["column_default"]))
+        col
+        for col in metadata["columns"]
+        if not (col.get("column_default") and "nextval" in str(col["column_default"]))
     ]
     if not insertable_columns:
         raise ValueError("no insertable columns discovered")

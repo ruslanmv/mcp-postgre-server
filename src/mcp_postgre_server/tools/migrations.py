@@ -5,7 +5,6 @@ from typing import Any
 
 from mcp_postgre_server.security.policies import ServerPolicy
 
-
 MIGRATION_SPLIT_RE = re.compile(r";\s*(?:\n|$)")
 
 
