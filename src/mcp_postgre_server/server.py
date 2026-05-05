@@ -23,6 +23,7 @@ from mcp_postgre_server.security.policies import ServerPolicy
 from mcp_postgre_server.tools.explain import register_explain_tools
 from mcp_postgre_server.tools.migrations import register_migration_tools
 from mcp_postgre_server.tools.query import register_query_tools
+from mcp_postgre_server.tools.repository import register_repository_tools
 from mcp_postgre_server.tools.schema import register_schema_tools
 from mcp_postgre_server.tools.test_data import register_test_data_tools
 
@@ -58,6 +59,7 @@ def build_server(settings: Settings | None = None) -> FastMCP:
     register_explain_tools(mcp, state.db, state.policy)
     register_migration_tools(mcp, state.policy)
     register_test_data_tools(mcp, state.db, state.policy)
+    register_repository_tools(mcp, state.db, state.policy)
     register_database_resources(mcp, state.db, state.policy)
 
     @mcp.tool(name="postgres_server_info")
@@ -76,14 +78,14 @@ def build_server(settings: Settings | None = None) -> FastMCP:
         }
 
     # Attach state for Starlette lifespan, health checks, tests, and advanced integrations.
-    setattr(mcp, "_mcp_postgre_state", state)
+    mcp._mcp_postgre_state = state
     return mcp
 
 
 def build_app(settings: Settings | None = None) -> Starlette:
     settings = settings or get_settings()
     mcp = build_server(settings)
-    state: AppState = getattr(mcp, "_mcp_postgre_state")
+    state: AppState = mcp._mcp_postgre_state
 
     async def health(_: Request) -> Response:
         return JSONResponse(

@@ -148,7 +148,11 @@ def validate_sql(
     referenced_schemas = _extract_schemas(parsed)
     disallowed = [schema for schema in referenced_schemas if schema not in allowed_schemas]
     if disallowed:
-        return SQLGuardResult(False, f"Schemas not allowed: {', '.join(disallowed)}", referenced_schemas=referenced_schemas)
+        return SQLGuardResult(
+            False,
+            f"Schemas not allowed: {', '.join(disallowed)}",
+            referenced_schemas=referenced_schemas,
+        )
 
     normalized = parsed.sql(dialect="postgres")
     return SQLGuardResult(True, "SQL allowed", normalized_sql=normalized, referenced_schemas=referenced_schemas)

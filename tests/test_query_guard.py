@@ -1,6 +1,5 @@
 from mcp_postgre_server.security.sql_guard import validate_sql
 
-
 DEFAULT = {
     "allowed_schemas": ["public"],
     "read_only": True,
